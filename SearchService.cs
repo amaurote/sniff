@@ -19,6 +19,7 @@ public class SearchService
 
         // search
         var results = new ResultsDto();
+        results.Path = BasePath;
         
         var searchOption = Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
         var paths = Directory.GetFiles(BasePath, SearchPattern, searchOption);

@@ -14,6 +14,11 @@ internal static class Program
         var results = searchService.Search();
 
         var printer = new PrinterService(results);
-        printer.Print();
+        
+        printer.PrintBasicInfo();
+        Console.WriteLine("\nTypes:");
+        printer.PrintExtensions();
+        // printer.PrintExtensions(10);
+        // printer.PrintExtensionsPage(13, 2);
     }
 }
