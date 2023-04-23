@@ -5,6 +5,10 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Version>0.1-SNAPSHOT</Version>
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>ft</ToolCommandName>
+        <PackageOutputPath>./nupkg</PackageOutputPath>
     </PropertyGroup>
 
 </Project>
