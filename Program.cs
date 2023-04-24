@@ -2,13 +2,21 @@
 
 internal static class Program
 {
+    /*
+     *  sniff
+     *  sniff -r
+     *  sniff -r /home/alfonz/dev/java
+     *  sniff -r -p --dir /home/alfonz/dev/java --pattern "*.j???"
+     *  sniff --pattern "*.???"
+     */
+    
     private static void Main(string[] args)
     {
         var searchService = new SearchService
         {
             BasePath = "/home/nineveh/dev/tools/godot/",
             Recursive = true,
-            // SearchPattern = "*.java"
+            // SearchPattern = "*.j???"
         };
 
         var results = searchService.Search();
@@ -17,8 +25,8 @@ internal static class Program
         
         printer.PrintBasicInfo();
         Console.WriteLine("\nTypes:");
-        printer.PrintExtensions();
+        // printer.PrintExtensions();
         // printer.PrintExtensions(10);
-        // printer.PrintExtensionsPage(13, 2);
+        printer.PrintExtensionsPage(Console.LargestWindowHeight - 4, 1);
     }
 }

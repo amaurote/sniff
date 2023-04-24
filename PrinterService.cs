@@ -1,5 +1,3 @@
-using System.Collections;
-
 namespace Sniff;
 
 public class PrinterService
@@ -22,7 +20,7 @@ public class PrinterService
 
     public void PrintBasicInfo()
     {
-        Console.WriteLine("Path: {0}", _data.Path);
+        Console.WriteLine("Working Dir: {0}", _data.Path);
         Console.WriteLine("Files: {0}", _data.FileCount);
         Console.WriteLine("Directories: {0}", _data.DirectoryCount);
         if (_data.ExecutableCount > 0)
@@ -47,7 +45,7 @@ public class PrinterService
         {
             var extension = pair.Key;
             if (extension.Length > _maxColumnWidth)
-                extension = extension[..(_maxColumnWidth - 1)] + '~';
+                extension = extension.Substring(0, _maxColumnWidth - 1) + '~';
 
             Console.WriteLine("{0}    {1}", extension.PadLeft(_minColumnWidth), pair.Value);
         }
