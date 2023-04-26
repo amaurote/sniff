@@ -1,5 +1,6 @@
 namespace Sniff;
 
+[Obsolete]
 public class PrinterService
 {
     private readonly ResultsDto _data;
