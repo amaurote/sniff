@@ -59,7 +59,7 @@ public class TablePrinter
         _rows.ForEach(row =>
         {
             if (row.Length != Columns.Count)
-                throw new TableException("Data inconsistency!");
+                throw new InvalidDataException("Data inconsistency!");
         });
     }
 
@@ -72,5 +72,7 @@ public class TablePrinter
         }
 
         return length;
+        
+        // todo return _rows.Select(row => row[column].Length).Max();
     }
 }

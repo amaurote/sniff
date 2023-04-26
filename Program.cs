@@ -1,4 +1,7 @@
-﻿namespace Sniff;
+﻿using Sniff.Services.Duplicates;
+using Sniff.Services.Types;
+
+namespace Sniff;
 
 internal static class Program
 {
@@ -8,6 +11,9 @@ internal static class Program
      *  sniff -r /home/alfonz/dev/java
      *  sniff -r -p --dir /home/alfonz/dev/java --pattern "*.j???"
      *  sniff --pattern "*.???"
+     *
+     *  sniff duplicatxes -r
+     *  sniff sniff
      */
     
     private static void Main(string[] args)
@@ -18,6 +24,15 @@ internal static class Program
             Recursive = true,
             // SearchPattern = "*.j???"
         };
+        
+        var duplicateService = new DuplicatesService()
+        {
+            BasePath = "/home/nineveh/dev/",
+            Recursive = true,
+            // SearchPattern = "*.j???"
+        };
+
+        duplicateService.Search();
 
         var results = searchService.Search();
 

@@ -1,4 +1,4 @@
-namespace Sniff;
+namespace Sniff.Services;
 
 public abstract class AbstractService
 {
@@ -9,9 +9,9 @@ public abstract class AbstractService
     protected void Validate()
     {
         if (!Path.Exists(BasePath))
-            throw new SearchException("Invalid path!");
+            throw new IOException("Invalid path!");
 
         if (!Directory.Exists(BasePath))
-            throw new SearchException("The path specified is not a directory!");
+            throw new IOException("The path specified is not a directory!");
     }
 }

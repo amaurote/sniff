@@ -1,4 +1,4 @@
-namespace Sniff;
+namespace Sniff.Services.Types;
 
 public class ResultsDto
 {

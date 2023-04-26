@@ -1,3 +1,5 @@
+using Sniff.Services.Types;
+
 namespace Sniff;
 
 [Obsolete]

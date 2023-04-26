@@ -1,6 +1,4 @@
-namespace Sniff;
-
-using System.IO;
+namespace Sniff.Services.Types;
 
 public class SearchService : AbstractService // todo rename
 {
