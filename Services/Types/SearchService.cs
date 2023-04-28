@@ -1,39 +1,54 @@
 namespace Sniff.Services.Types;
 
+using Table;
+
 public class SearchService : AbstractService // todo rename
 {
-    public ResultsDto Search()
+    public override Table Search()
     {
         Validate();
 
         var searchOption = Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-        var paths = Directory.GetFileSystemEntries(BasePath, SearchPattern, searchOption);
-        
-        var results = new ResultsDto();
-        results.Path = BasePath;
-        
+        var paths = Directory.GetFiles(BasePath, SearchPattern, searchOption);
+
+        var withoutExtension = 0;
+        var extensions = new Dictionary<string, int>();
+
         foreach (var path in paths)
         {
-            if (Directory.Exists(path))
-            {
-                results.DirectoryCount++;
-                continue;
-            }
-            results.FileCount++;
-            
-            var ufm = File.GetUnixFileMode(path);
-            if (ufm.HasFlag(UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute))
-                results.ExecutableCount++;
-
             var extension = Path.GetExtension(path);
             if (string.IsNullOrEmpty(extension))
-                results.WithoutExtensionCount++;
-            else if (results.Extensions.TryGetValue(extension, out var value))
-                results.Extensions[extension] = ++value;
+                withoutExtension++;
+            else if (extensions.TryGetValue(extension, out var value))
+                extensions[extension] = ++value;
             else
-                results.Extensions.Add(extension, 1);
+                extensions.Add(extension, 1);
         }
 
-        return results;
+        var colType = new Column
+        {
+            MinWidth = 19,
+            MaxWidth = 30,
+            ColumnWidth = ColumnWidth.Auto,
+            ColumnPadding = ColumnPadding.FromLeft
+        };
+
+        var colCount = new Column
+        {
+            MinWidth = 0,
+            MaxWidth = 100,
+            ColumnWidth = ColumnWidth.Auto,
+            ColumnPadding = ColumnPadding.FromRight
+        };
+
+        var table = new Table();
+        table.AddAllColumns(colType, colCount);
+        table.AddSingleRow("<without extension>", withoutExtension.ToString());
+        foreach (var (key, value) in extensions.OrderByDescending(key => key.Value))
+        {
+            table.AddSingleRow(key, value.ToString());
+        }
+
+        return table;
     }
 }
