@@ -1,36 +1,32 @@
 namespace Sniff.Table;
 
-public class TablePrinter
+public static class TablePrinter
 {
-    public List<Column> Columns { get; } = new();
-    public string Spacer { get; set; } = "  ";
-    private List<string[]> _rows = new();
-
-    public void AddRow(string[] row)
+    public static void Print(Table table)
     {
-        _rows.Add(row);
-    }
-
-    public void PrintTable()
-    {
-        Validate();
+        var columns = table.GetColumns().ToList();
+        var rows = table.GetRows().ToList();
+        
+        if(rows.Any(row => row.Length != columns.Count))
+            throw new InvalidDataException("Data inconsistency!");
 
         List<Tuple<Column, int>> columnTuples = new();
-        for (var i = 0; i < Columns.Count; i++)
+        for (var i = 0; i < columns.Count; i++)
         {
-            var column = Columns[i];
+            var column = columns[i];
             if (column.ColumnWidth == ColumnWidth.Fixed)
             {
                 columnTuples.Add(new Tuple<Column, int>(column, column.MaxWidth));
             }
             else
             {
-                var width = Math.Clamp(GetLongestString(i), column.MinWidth, column.MaxWidth);
+                var longest = rows.Select(row => row[i].Length).Max();
+                var width = Math.Clamp(longest, column.MinWidth, column.MaxWidth);
                 columnTuples.Add(new Tuple<Column, int>(column, width));
             }
         }
 
-        _rows.ForEach(row =>
+        rows.ForEach(row =>
         {
             for (var i = 0; i < row.Length; i++)
             {
@@ -41,38 +37,19 @@ public class TablePrinter
                 if (value.Length > width)
                     value = value.Substring(0, width - 1) + "~";
 
-                value = column.ColumnPadding == ColumnPadding.FromLeft
-                    ? value.PadLeft(width)
-                    : value.PadRight(width);
+                value = column.ColumnPadding switch
+                {
+                    ColumnPadding.FromLeft => value.PadLeft(width),
+                    ColumnPadding.FromRight => value.PadRight(width),
+                    _ => value
+                };
 
                 Console.Write(value);
                 if (i + 1 != row.Length)
-                    Console.Write(Spacer);
+                    Console.Write(table.Spacer);
             }
 
             Console.WriteLine();
         });
-    }
-
-    private void Validate()
-    {
-        _rows.ForEach(row =>
-        {
-            if (row.Length != Columns.Count)
-                throw new InvalidDataException("Data inconsistency!");
-        });
-    }
-
-    private int GetLongestString(int column)
-    {
-        var length = 0;
-        foreach (var row in _rows)
-        {
-            length = Math.Max(length, row[column].Length);
-        }
-
-        return length;
-        
-        // todo return _rows.Select(row => row[column].Length).Max();
     }
 }

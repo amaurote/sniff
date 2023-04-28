@@ -2,5 +2,5 @@ namespace Sniff.Table;
 
 public enum ColumnPadding
 {
-    FromLeft, FromRight
+    FromLeft, FromRight, None
 }

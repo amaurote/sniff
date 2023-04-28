@@ -2,8 +2,8 @@ namespace Sniff.Table;
 
 public class Column
 {
-    public int MinWidth { get; set; } = 20;
-    public int MaxWidth { get; set; } = 40;
-    public ColumnWidth ColumnWidth { get; set; } = ColumnWidth.Fixed;
-    public ColumnPadding ColumnPadding { get; set; } = ColumnPadding.FromRight;
+    public int MinWidth { get; init; } = 20;
+    public int MaxWidth { get; init; } = 40;
+    public ColumnWidth ColumnWidth { get; init; } = ColumnWidth.Fixed;
+    public ColumnPadding ColumnPadding { get; init; } = ColumnPadding.FromRight;
 }
