@@ -11,7 +11,7 @@ internal static class Program
         Command = 0b0001,
         Option = 0b0010,
         ParameterName = 0b0100,
-        Other = 0b1000
+        Value = 0b1000
     }
 
     private enum ParameterName
@@ -24,12 +24,12 @@ internal static class Program
 
     private static readonly string[] Commands = { "sniff", "duplicates", "types" };
 
-    private static ArgumentType _expectedArgument = ArgumentType.Command | ArgumentType.Option | ArgumentType.ParameterName | ArgumentType.Other;
-
+    // default starting values
+    private static ArgumentType _expectedArgument = ArgumentType.Command | ArgumentType.Option | ArgumentType.ParameterName | ArgumentType.Value;
     private static ParameterName _expectedParameter = ParameterName.Path;
     private static AbstractService _chosenService = new TypesService();
-    private static bool _paged = false;             // TODO
-    private static int? _resultsLimit = null;       // TODO
+    private static bool _paged;
+    private static int _resultsLimit;
 
     /*
      *  sniff
@@ -41,12 +41,39 @@ internal static class Program
      *  sniff duplicates -r
      *  sniff sniff
      */
-
     private static void Main(string[] args)
     {
-        for (var i = 0; i < args.Length; i++)
+        ProcessAllArguments(args);
+
+        var basicInfoService = new BasicInfoService();
+        TablePrinter.Print(basicInfoService.Search());
+        Console.WriteLine();
+
+        if (_paged)
         {
-            var arg = args[i];
+            var currentPage = 1;
+            var pageSize = Console.LargestWindowHeight;
+            ConsoleKeyInfo cki;
+            do
+            {
+                var lines = TablePrinter.Print(_chosenService.Search(), pageSize, currentPage);
+                if (lines < 1)
+                    break;
+
+                currentPage++;
+                cki = Console.ReadKey(true);
+            } while (cki.Key != ConsoleKey.Escape);
+        }
+        else if (_resultsLimit > 0)
+            TablePrinter.Print(_chosenService.Search(), _resultsLimit);
+        else
+            TablePrinter.Print(_chosenService.Search());
+    }
+
+    private static void ProcessAllArguments(IEnumerable<string> args)
+    {
+        foreach (var arg in args)
+        {
             var argumentType = GetArgumentType(arg);
             if (!_expectedArgument.HasFlag(argumentType))
                 throw new ArgumentException($"Invalid argument: \"{arg}\"");
@@ -61,10 +88,10 @@ internal static class Program
                     continue;
                 case ArgumentType.ParameterName:
                     ProcessParameterName(arg);
-                    _expectedArgument = ArgumentType.Other;
+                    _expectedArgument = ArgumentType.Value;
                     continue;
-                case ArgumentType.Other:
-                    ProcessOther(arg);
+                case ArgumentType.Value:
+                    ProcessValue(arg);
                     _expectedArgument = ArgumentType.Option | ArgumentType.ParameterName;
                     _expectedParameter = ParameterName.None;
                     break;
@@ -72,21 +99,8 @@ internal static class Program
 
             _expectedArgument &= ~ArgumentType.Command;
         }
-
-        var basicInfoService = new BasicInfoService();
-        TablePrinter.Print(basicInfoService.Search());
-        Console.WriteLine();
-
-        if (_paged)
-        {
-            throw new NotImplementedException();
-        }
-        else if (_resultsLimit != null)
-            TablePrinter.Print(_chosenService.Search(), (int)_resultsLimit);
-        else
-            TablePrinter.Print(_chosenService.Search());
     }
-
+    
     private static ArgumentType GetArgumentType(string arg)
     {
         if (arg.StartsWith("--"))
@@ -108,7 +122,7 @@ internal static class Program
         if (Commands.Contains(arg))
             return ArgumentType.Command;
 
-        return ArgumentType.Other;
+        return ArgumentType.Value;
     }
 
     private static void ProcessCommand(string arg)
@@ -157,7 +171,7 @@ internal static class Program
         };
     }
 
-    private static void ProcessOther(string arg)
+    private static void ProcessValue(string arg)
     {
         switch (_expectedParameter)
         {

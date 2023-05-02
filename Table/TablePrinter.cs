@@ -8,10 +8,10 @@ public static class TablePrinter
     public static void Print(Table table, int limit) =>
         Print(table.GetColumns().ToList(), table.GetRows().Take(limit).ToList(), table.Spacer);
 
-    public static void Print(Table table, int pageSize, int page) =>
+    public static int Print(Table table, int pageSize, int page) =>
         Print(table.GetColumns().ToList(), table.GetRows().Skip((page - 1) * pageSize).Take(pageSize).ToList(), table.Spacer);
 
-    private static void Print(IReadOnlyList<Column> columns, List<string[]> rows, string spacer)
+    private static int Print(IReadOnlyList<Column> columns, List<string[]> rows, string spacer)
     {
         if (rows.Any(row => row.Length != columns.Count))
             throw new InvalidDataException("Data inconsistency!");
@@ -57,5 +57,7 @@ public static class TablePrinter
 
             Console.WriteLine();
         });
+
+        return rows.Count;
     }
 }
