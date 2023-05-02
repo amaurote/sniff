@@ -18,8 +18,8 @@ internal static class Program
     {
         Pattern,
         Path,
-        None,
-        Limit
+        Limit,
+        None
     }
 
     private static readonly string[] Commands = { "sniff", "duplicates", "types" };

@@ -1,7 +1,8 @@
 using System.Security.Cryptography;
-using Sniff.Table;
 
 namespace Sniff.Services;
+
+using Table;
 
 public class DuplicatesService : AbstractService
 {
@@ -18,7 +19,7 @@ public class DuplicatesService : AbstractService
         }
     }
     
-    public override Table.Table Search() // todo handle 0 bytes files
+    public override Table Search() // todo handle 0 bytes files
     {
         Validate();
 
@@ -45,7 +46,7 @@ public class DuplicatesService : AbstractService
             .SelectMany(x => x)
             .ToList();
 
-        var table = new Table.Table();
+        var table = new Table();
         table.AddAllColumns(GetColumns());
         filtered.ForEach(row => table.AddSingleRow(row.Size.ToString(), row.MD5!, row.Path));
         return table;

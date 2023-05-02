@@ -1,10 +1,10 @@
-using Sniff.Table;
-
 namespace Sniff.Services;
+
+using Table;
 
 public class TypesService : AbstractService // todo rename
 {
-    public override Table.Table Search()
+    public override Table Search()
     {
         Validate();
 
@@ -41,7 +41,7 @@ public class TypesService : AbstractService // todo rename
             ColumnPadding = ColumnPadding.None
         };
 
-        var table = new Table.Table();
+        var table = new Table();
         table.AddAllColumns(colType, colCount);
         table.AddSingleRow("<without extension>", withoutExtension.ToString());
         foreach (var (key, value) in extensions.OrderByDescending(key => key.Value))
