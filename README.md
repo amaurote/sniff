@@ -31,7 +31,7 @@ sniff
 sniff -r
 sniff -p "/home/alfonz/meta-files"
 sniff -rp --path "/home/alfonz/dev/dotnet" --pattern "*.cpp"
-sniff types -r
+sniff types -r -p
 
 sniff duplicates -r --path "/home/alfonz/dev" --pattern "*.xml"
 
