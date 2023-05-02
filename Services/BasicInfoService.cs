@@ -1,10 +1,10 @@
-namespace Sniff.Services.BasicInfo;
+using Sniff.Table;
 
-using Table;
+namespace Sniff.Services;
 
 public class BasicInfoService : AbstractService
 {
-    public override Table Search()
+    public override Table.Table Search()
     {
         Validate();
 
@@ -34,7 +34,7 @@ public class BasicInfoService : AbstractService
             ColumnPadding = ColumnPadding.None
         };
 
-        var table = new Table();
+        var table = new Table.Table();
         table.AddAllColumns(labelCol, resCol);
         table.AddSingleRow("Path:", BasePath);
         table.AddSingleRow("Search option:", Recursive ? "THIS AND ALL SUB-DIRECTORIES" : "THIS DIRECTORY ONLY");

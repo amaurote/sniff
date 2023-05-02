@@ -1,22 +1,34 @@
 using System.Security.Cryptography;
+using Sniff.Table;
 
-namespace Sniff.Services.Duplicates;
-
-using Table;
+namespace Sniff.Services;
 
 public class DuplicatesService : AbstractService
 {
-    public override Table Search() // todo handle 0 bytes files
+    private class Row
+    {
+        public string Path;
+        public long Size;
+        public string? MD5;
+
+        public Row(string path, long size)
+        {
+            Path = path;
+            Size = size;
+        }
+    }
+    
+    public override Table.Table Search() // todo handle 0 bytes files
     {
         Validate();
 
         var searchOption = Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
         var paths = Directory.GetFiles(BasePath, SearchPattern, searchOption);
 
-        var results = new List<DuplicatesRow>();
+        var results = new List<Row>();
         foreach (var path in paths)
         {
-            results.Add(new DuplicatesRow(path, new FileInfo(path).Length));
+            results.Add(new Row(path, new FileInfo(path).Length));
         }
 
         var duplicates = results
@@ -33,18 +45,20 @@ public class DuplicatesService : AbstractService
             .SelectMany(x => x)
             .ToList();
 
-        var table = new Table();
+        var table = new Table.Table();
         table.AddAllColumns(GetColumns());
         filtered.ForEach(row => table.AddSingleRow(row.Size.ToString(), row.MD5!, row.Path));
         return table;
     }
 
-    private void CalculateMD5(IEnumerable<DuplicatesRow> duplicatesRows)
+    private void CalculateMD5(IEnumerable<Row> duplicatesRows)
     {
         using var md5 = MD5.Create();
         foreach (var row in duplicatesRows)
         {
-            // using (var stream = new FileStream(row.Path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024 + 1024, true)) // todo for big files (needs to be tested) 
+            // todo for big files (needs to be tested)
+            // using (var stream = new FileStream(row.Path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024 + 1024, true)) 
+            
             using var stream = new FileStream(row.Path, FileMode.Open, FileAccess.Read, FileShare.Read);
             var checksum = md5.ComputeHash(stream); // todo try to use async
             row.MD5 = BitConverter.ToString(checksum).Replace("-", "");

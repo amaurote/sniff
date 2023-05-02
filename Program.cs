@@ -1,7 +1,4 @@
 ﻿using Sniff.Services;
-using Sniff.Services.BasicInfo;
-using Sniff.Services.Duplicates;
-using Sniff.Services.Types;
 using Sniff.Table;
 
 namespace Sniff;
@@ -27,8 +24,7 @@ internal static class Program
 
     private static readonly string[] Commands = { "sniff", "duplicates", "types" };
 
-    private static ArgumentType _expectedArgument =
-        ArgumentType.Command | ArgumentType.Option | ArgumentType.ParameterName | ArgumentType.Other;
+    private static ArgumentType _expectedArgument = ArgumentType.Command | ArgumentType.Option | ArgumentType.ParameterName | ArgumentType.Other;
 
     private static ParameterName _expectedParameter = ParameterName.Path;
     private static AbstractService _chosenService = new TypesService();
@@ -80,7 +76,15 @@ internal static class Program
         var basicInfoService = new BasicInfoService();
         TablePrinter.Print(basicInfoService.Search());
         Console.WriteLine();
-        TablePrinter.Print(_chosenService.Search());
+
+        if (_paged)
+        {
+            throw new NotImplementedException();
+        }
+        else if (_resultsLimit != null)
+            TablePrinter.Print(_chosenService.Search(), (int)_resultsLimit);
+        else
+            TablePrinter.Print(_chosenService.Search());
     }
 
     private static ArgumentType GetArgumentType(string arg)
@@ -109,6 +113,12 @@ internal static class Program
 
     private static void ProcessCommand(string arg)
     {
+        if (arg.Equals("sniff"))
+        {
+            // todo about
+            Environment.Exit(0);
+        }
+        
         _chosenService = arg switch
         {
             "sniff" => throw new NotImplementedException(),

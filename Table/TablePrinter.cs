@@ -2,12 +2,18 @@ namespace Sniff.Table;
 
 public static class TablePrinter
 {
-    public static void Print(Table table)
+    public static void Print(Table table) =>
+        Print(table.GetColumns().ToList(), table.GetRows().ToList(), table.Spacer);
+
+    public static void Print(Table table, int limit) =>
+        Print(table.GetColumns().ToList(), table.GetRows().Take(limit).ToList(), table.Spacer);
+
+    public static void Print(Table table, int pageSize, int page) =>
+        Print(table.GetColumns().ToList(), table.GetRows().Skip((page - 1) * pageSize).Take(pageSize).ToList(), table.Spacer);
+
+    private static void Print(IReadOnlyList<Column> columns, List<string[]> rows, string spacer)
     {
-        var columns = table.GetColumns().ToList();
-        var rows = table.GetRows().ToList();
-        
-        if(rows.Any(row => row.Length != columns.Count))
+        if (rows.Any(row => row.Length != columns.Count))
             throw new InvalidDataException("Data inconsistency!");
 
         List<Tuple<Column, int>> columnTuples = new();
@@ -46,7 +52,7 @@ public static class TablePrinter
 
                 Console.Write(value);
                 if (i + 1 != row.Length)
-                    Console.Write(table.Spacer);
+                    Console.Write(spacer);
             }
 
             Console.WriteLine();
