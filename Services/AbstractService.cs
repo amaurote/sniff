@@ -4,9 +4,9 @@ using Table;
 
 public abstract class AbstractService
 {
-    public string BasePath { get; set; } = Directory.GetCurrentDirectory();
-    public string SearchPattern { get; set; } = "*";
-    public bool Recursive { get; set; } = false;
+    public static string BasePath { get; set; } = Directory.GetCurrentDirectory();
+    public static string SearchPattern { get; set; } = "*";
+    public static bool Recursive { get; set; } = false;
 
     public abstract Table Search();
     

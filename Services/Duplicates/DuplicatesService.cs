@@ -55,9 +55,9 @@ public class DuplicatesService : AbstractService
     {
         var colSize = new Column
         {
-            MinWidth = 17,
-            MaxWidth = 17,
-            ColumnWidth = ColumnWidth.Fixed,
+            MinWidth = 7,
+            MaxWidth = 20,
+            ColumnWidth = ColumnWidth.Auto,
             ColumnPadding = ColumnPadding.FromLeft
         };
 
@@ -73,11 +73,10 @@ public class DuplicatesService : AbstractService
         {
             MinWidth = 10,
             MaxWidth = 200,
-            ColumnWidth = ColumnWidth.Auto,
+            ColumnWidth = ColumnWidth.Fixed,
             ColumnPadding = ColumnPadding.None
         };
 
         return new[] { colSize, colHash, colPath };
     }
-    
 }

@@ -2,7 +2,7 @@ namespace Sniff.Services.Types;
 
 using Table;
 
-public class SearchService : AbstractService // todo rename
+public class TypesService : AbstractService // todo rename
 {
     public override Table Search()
     {
@@ -36,9 +36,9 @@ public class SearchService : AbstractService // todo rename
         var colCount = new Column
         {
             MinWidth = 0,
-            MaxWidth = 100,
-            ColumnWidth = ColumnWidth.Auto,
-            ColumnPadding = ColumnPadding.FromRight
+            MaxWidth = 15,
+            ColumnWidth = ColumnWidth.Fixed,
+            ColumnPadding = ColumnPadding.None
         };
 
         var table = new Table();

@@ -31,7 +31,7 @@ public class BasicInfoService : AbstractService
             MinWidth = 0,
             MaxWidth = 200,
             ColumnWidth = ColumnWidth.Auto,
-            ColumnPadding = ColumnPadding.FromRight
+            ColumnPadding = ColumnPadding.None
         };
 
         var table = new Table();
